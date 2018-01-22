@@ -1,4 +1,4 @@
-# CleanDNS
+# CleanDNS: Because Detection is Cool but Proactivity is Better!
 
 # Installation of python new modules
 
@@ -19,36 +19,32 @@ PFSense 2.3.4-Patch1
 - Cron Module
 - Service Watchdog Module
 - SNORT Community Signature + Emerging Threats for constant update.
-- - Bring Your Own SNORT OINKCODE to get advanced rules.
+- Bring Your Own SNORT OINKCODE to get advanced rules.
 
-#CleanDNS Project: Because Detection is Cool but Proactivity is Better!
 Features
 
-    Inline DNS Request Filter (Suricata IPS)
-    IPS Filter for IPS Filter for RansomWareTracker IP Reputation IP Reputation
-    IPS Filter for Phistank IP Reputation
-    IPS Filter for RansomWareTracker IP Reputation
-    DNSEC Recursive DNS Requests
-    DNS Dynamic Sinkhole By DShield
-    DNS Dynamic Sinkhole By Malware Domain BlockList
-    DNS Dynamic Sinkhole By MalwareDomainsLists BlockList
-    DNS Dynamic Sinkhole By NetworkSec
-    DNS Dynamic Sinkhole By OTX AlienVault
-    DNS Dynamic Sinkhole By PhishTank
-    DNS Dynamic Sinkhole By RansomWareTracker
-    DNS Dynamic Sinkhole By Shalla's BlackList
-    DNS Dynamic Sinkhole By SquidGuard Contrib
-    DNS Dynamic Sinkhole By URLBlackList
-    DNS Dynamic Sinkhole By Zeustracker
-    DNS Dynamic Last Resort BlackHole (OPENDNS DNS Services)
-    DNS Tunneling Filtering (IOdine Proof)
-    Local Whitelist / Blacklist for Domain Sinkhole
-    Local Whitelist / Blacklist for IP Reputation
-
-
+- Inline DNS Request Filter (Suricata IPS)
+- IPS Filter for IPS Filter for RansomWareTracker IP Reputation IP Reputation
+- IPS Filter for Phistank IP Reputation
+- IPS Filter for RansomWareTracker IP Reputation
+- DNSEC Recursive DNS Requests
+- DNS Dynamic Sinkhole By DShield
+- DNS Dynamic Sinkhole By Malware Domain BlockList
+- DNS Dynamic Sinkhole By MalwareDomainsLists BlockList
+- DNS Dynamic Sinkhole By NetworkSec
+- DNS Dynamic Sinkhole By OTX AlienVault
+- DNS Dynamic Sinkhole By PhishTank
+- DNS Dynamic Sinkhole By RansomWareTracker
+- DNS Dynamic Sinkhole By Shalla's BlackList
+- DNS Dynamic Sinkhole By SquidGuard Contrib
+- DNS Dynamic Sinkhole By URLBlackList
+- DNS Dynamic Sinkhole By Zeustracker
+- DNS Dynamic Last Resort BlackHole (OPENDNS DNS Services)
+- DNS Tunneling Filtering (IOdine Proof)
+- Local Whitelist / Blacklist for Domain Sinkhole
+- Local Whitelist / Blacklist for IP Reputation
 
 Make sure you install pip
-
 ```
 [2.3.4-RELEASE][root@cleandns.localdomain.com]/: python2.7 -m ensurepip
 Collecting setuptools
@@ -92,3 +88,6 @@ Installing collected packages: simplejson, OTXv2
   Running setup.py install for OTXv2 ... done
 Successfully installed OTXv2-1.2 simplejson-3.13.2
 ```
+
+# Contact
+cleandns@cleandns.com.br
