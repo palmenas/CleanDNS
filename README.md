@@ -3,16 +3,16 @@
 # Installation of python new modules
 Make sure you install pip
 
-'''
+```
 [2.3.4-RELEASE][root@cleandns.localdomain.com]/: python2.7 -m ensurepip
 Collecting setuptools
 Collecting pip
 Installing collected packages: setuptools, pip
 Successfully installed pip-9.0.1 setuptools-28.8.0
-'''
+```
 
 Then requests (needed by OTXv2)
-'''
+```
 [2.3.4-RELEASE][root@cleandns.localdomain.com]/: python2.7 -m pip install requests
 Collecting requests
   Downloading requests-2.18.4-py2.py3-none-any.whl (88kB)
@@ -31,10 +31,10 @@ Collecting idna<2.7,>=2.5 (from requests)
     100% |################################| 61kB 1.7MB/s 
 Installing collected packages: chardet, certifi, urllib3, idna, requests
 Successfully installed certifi-2018.1.18 chardet-3.0.4 idna-2.6 requests-2.18.4 urllib3-1.22
-'''
+```
 
 Finaly OTXv2
-'''
+```
 [2.3.4-RELEASE][root@cleandns.localdomain.com]/: python2.7 -m pip install OTXv2
 Collecting OTXv2
   Downloading OTXv2-1.2.tar.gz
@@ -45,4 +45,4 @@ Installing collected packages: simplejson, OTXv2
   Running setup.py install for simplejson ... done
   Running setup.py install for OTXv2 ... done
 Successfully installed OTXv2-1.2 simplejson-3.13.2
-'''
+```
