@@ -1,10 +1,7 @@
 # CleanDNS: Because Detection is Cool but Proactivity is Better!
-
-# Installation of python new modules
-
 This is a Proof of Concept Technology for protecting End Users from malware, advanced threat and other malicious content by preventing DNS malicious Request/Responses.
 
-Considerations:
+# Considerations
 Virtual Hardware Recommended (ALL Back-level Compatibility):
 - CPU Type: x86_64 (AMD64)
 - 4vCPUs
@@ -13,7 +10,7 @@ Virtual Hardware Recommended (ALL Back-level Compatibility):
 - Intel e1000 Virtual Network Interfaces (Mandatory)
 
 Components Used:
-PFSense 2.3.4-Patch1
+- PFSense 2.3.4-Patch1
 - Suricata Module
 - Bind Module
 - Cron Module
@@ -22,7 +19,6 @@ PFSense 2.3.4-Patch1
 - Bring Your Own SNORT OINKCODE to get advanced rules.
 
 Features
-
 - Inline DNS Request Filter (Suricata IPS)
 - IPS Filter for IPS Filter for RansomWareTracker IP Reputation IP Reputation
 - IPS Filter for Phistank IP Reputation
@@ -44,6 +40,7 @@ Features
 - Local Whitelist / Blacklist for Domain Sinkhole
 - Local Whitelist / Blacklist for IP Reputation
 
+# Installation of python new modules
 Make sure you install pip
 ```
 [2.3.4-RELEASE][root@cleandns.localdomain.com]/: python2.7 -m ensurepip
