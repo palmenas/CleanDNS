@@ -3,7 +3,13 @@
 # update master - 0.0.1 (01/20/2018)
 
 # Import libraries
-import os, subprocess, sys, ConfigParser, argparse
+import argparse
+import ConfigParser
+import os
+import subprocess
+import sys
+
+# Local library
 import clean_environ
 
 # Set environment variables
@@ -30,6 +36,7 @@ def update_files(source):
                 print >> sys.stderr, 'Process terminated with exit code:', -RETCODE
         except OSError as RETCODE_E:
             print >> sys.stderr, 'ERROR: Failed to start the process:', RETCODE_E
+            return False
 
 # Main function
 def main():

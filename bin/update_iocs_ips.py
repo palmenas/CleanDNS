@@ -60,26 +60,23 @@ def update_shallblacklist():
     DOMAIN_FILE = CLEANDNS_DIR + '/spool/ips-shallablacklist.txt'
     print 'Creating file %s' % DOMAIN_FILE
     os.chdir(TMP_DIR)
-    # os.system('fetch -a -w 3 -q ' + MALWARE_URL)
+    os.system('fetch -a -w 3 -q ' + MALWARE_URL)
     os.system('tar -xzf ' + MALWARE_FILE_TMP + '>/dev/null')
     write_to_file(DOMAIN_FILE, MALWARE_FILE)
 
-    # Remove the trash
+    # Remove the temporary files
     os.system('rm -rf ' + TMP_DIR + '/BL >/dev/null')
 
 # Write to IP.txt corresponding file
 def write_to_file(DOMAIN_FILE, MALWARE_FILE):
-    f = open(MALWARE_FILE, 'r')
-    f_lines = f.readlines()
-    f.close
-
     f_regs = set()
-    for line in f_lines:
-        try:
-            socket.inet_aton(line)
-            f_regs.add(line)
-        except:
-            continue
+    while open(MALWARE_FILE) as f:
+        for line in f:
+            try:
+                socket.inet_aton(line)
+                f_regs.add(line)
+            except:
+                continue
 
     f = open(DOMAIN_FILE, 'w')
     f.writelines(sorted(f_regs))
