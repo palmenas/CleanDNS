@@ -4,39 +4,124 @@
 
 # Import libraries
 import argparse
+import binascii
 import ConfigParser
+import glob
 import os
+import re
+import shutil
+import socket
 import subprocess
 import sys
+import time
 
-# Local library
+# Local
 import clean_environ
 
-# Set environment variables
-os.environ['PATH'] = '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin'
+# Read configuration file
+config = ConfigParser.RawConfigParser()
+config.read('/cf/cleandns/etc/setup.cfg')
 
-def read_configs():
-    config = ConfigParser.RawConfigParser()
-    config.read('/cf/cleandns/etc/setup.cfg')
-    # config.read('setup.cfg')
-    try:
-        # Read configuration file
-        clean_dir = config.get('cleandns', 'dir')
-        return clean_dir
-    except:
-        print >> sys.stderr, 'ERROR: Could not open "setup.cfg" configuration file.'
+# Some constants
+CLEANDNS_DIR = config.get('cleandns', 'dir')
+LOCAL_BL_IPS = config.get('local_settings','blacklist_ips')
+SURICATA_INSTALLED_DIR = config.get('suricata','installed_dir')
+SURICATA_INSTALLED_RULE = config.get('suricata', 'installed_rule')
+SURICATA_BLOCK_RULE = config.get('suricata','block_rule')
+SURICATA_ACTION = config.get('suricata', 'action')
+SURICATA_BL_1 = config.get('suricata', 'iplist_1')
+SURICATA_BL_2 = config.get('suricata', 'iplist_2')
+SURICATA_PRE_RULE = config.get('suricata', 'prerule')
+
+# Count the lines on a file
+def file_len(f_name):
+    with open(f_name) as f:
+        for i, l in enumerate(f):
+            pass
+    return(i + 1)
 
 # Update the source files, be it a domain of IPs
-def update_files(source):
-    clean_dir = read_configs()
-    if clean_dir:
+def update_ips_mod():
+
+    # Deleting old files
+    if os.path.isfile(SURICATA_BLOCK_RULE): os.remove(SURICATA_BLOCK_RULE)
+    if os.path.isfile(SURICATA_PRE_RULE): os.remove(SURICATA_PRE_RULE)
+
+    print "Updating IPs BlackLists"
+    enabled_sources = config.get('sources','ips').split(' ')
+    for i in enabled_sources:
+        print CLEANDNS_DIR + '/bin/update_ips.py --'+i
+        # subprocess.call(CLEANDNS_DIR + '/etc/sources/available/ips' + i + '.py')
+    print enabled_sources
+    exit(0)
+
+
+    #
+    #
+    # EXITING HERE
+    #
+    #
+
+
+    # Local Blacklist
+    shutil.copyfile(LOCAL_BL_IPS, SURICATA_BL_2)
+
+    # Deduplicating
+    s_regs = set()
+    for r_file in glob.glob(CLEANDNS_DIR + '/spool/ips-*'):
+        r_file_tmp = open(r_file, 'r')
+        r_file_tmp_lines = r_file_tmp.readlines()
+        r_file_tmp.close()
+
+        # Organize the file and clean
+        for line in r_file_tmp_lines:
+            line = re.sub(' \n','',line)
+            if re.search('^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$', line):
+                s_regs.add(line)
+
+    # Writing sorted, seded, uniqed
+    all_regs_file = open(SURICATA_BL_2, 'a')
+    all_regs_file.writelines(sorted(s_regs))
+    all_regs_file.close()
+
+    # Cleaning Whitelist
+    print 'Cleaning whitelist'
+    subprocess.call(CLEANDNS_DIR + '/bin/run_whitelist_ips.sh')
+
+    # IP to Hex -> Suricata
+    print 'Updating Suricata Rules'
+    r_file = open(SURICATA_BL_1, 'r')
+    r_file_lines = r_file.readlines()
+    r_file.close()
+    counter = 1
+    f_regs = set()
+    for line in r_file_lines:
         try:
-            RETCODE = subprocess.call(clean_dir + '/sbin/update_' + source +'.py', shell=False)
-            if RETCODE < 0:
-                print >> sys.stderr, 'Process terminated with exit code:', -RETCODE
-        except OSError as RETCODE_E:
-            print >> sys.stderr, 'ERROR: Failed to start the process:', RETCODE_E
-            return False
+            socket.inet_aton(line)
+            hex_ip = binascii.hexlify(socket.inet_aton(line)).upper()
+            str_hex_ip = hex_ip[0:2] + ' ' + hex_ip[2:4] + ' ' + hex_ip[4:6] + ' ' + hex_ip[6:8]
+            f_regs.add(SURICATA_ACTION + ' udp any 53 -> any any (msg:"CleanDNS_Phase3: dns reponse for a malicious IP ' \
+                + re.sub('\n', '', line) + ' "; sid:3210 ' + str(counter) + ' ; rev:001; content:"|' + str_hex_ip + '|";)\n')
+            counter += 1
+        except socket.error:
+            continue
+
+    fhan_suri_block_rule = open(SURICATA_BLOCK_RULE, 'w')
+    fhan_suri_block_rule.writelines(sorted(f_regs))
+    fhan_suri_block_rule.close()
+    # print 'File created' + str(os.path.isfile(SURICATA_BLOCK_RULE))
+
+    # Update Suricata
+    if os.path.isfile(SURICATA_BLOCK_RULE):
+        os.remove(SURICATA_INSTALLED_DIR + SURICATA_INSTALLED_RULE)
+        shutil.copyfile(SURICATA_BLOCK_RULE, SURICATA_INSTALLED_DIR + SURICATA_INSTALLED_RULE)
+        subprocess.call(CLEANDNS_DIR + '/sbin/update_suricataconfig.sh')
+
+    # Counting
+    print 'CleanDNS is protecting against ' + str(file_len(SURICATA_BLOCK_RULE)) + ' malware IPs!\nEnjoy!'
+
+def update_sinkhole():
+    exit(0)
 
 # Main function
 def main():
@@ -48,9 +133,9 @@ def main():
 
     # Check values parsed
     if args.ips_mod:
-        update_files('ips_mod')
+        update_ips_mod()
     elif args.sinkhole:
-        update_files('sinkhole')
+        update_sinkhole()
     else:
         # Print help mesage
         subprocess.call([sys.argv[0], '-h'])

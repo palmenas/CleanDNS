@@ -23,8 +23,8 @@ def download_partial():
         OTX_SERVER = config.get('otx', 'server')
         otx = OTXv2(API_KEY, server=OTX_SERVER)
 
-        # Download partial indicators (test) (1 page with limit of 10 records)
-        pulses = otx.getall_iter(max_page=1, limit=10)
+        # Download partial indicators (test) (3 page with limit of 10 records)
+        pulses = otx.getall_iter(max_page=3, limit=10)
         f = open('pulses.txt', 'w')
         for p in pulses:
             for i in p['indicators']:
@@ -40,10 +40,10 @@ def download_partial():
 """
     Download the full list of indicators
     note that it will take a long time
-    Aprox 1gb of information will be downloaded
+    Aprox 1GB of IOCs will be downloaded
 """
 def download_full():
-    print 'Downloading FULL indicators... sit and wait ! :)'
+    print 'Downloading FULL indicators list... sit and wait ! :)'
     config = ConfigParser.RawConfigParser()
     try:
         # Read configuration file
@@ -69,13 +69,14 @@ def download_full():
 def main():
     argparser = argparse.ArgumentParser()
     argparser.add_argument('-F', '--FULL', dest='full', help='Download ALL IOCs (aprox 1GB)', action='store_true')
-    argparser.add_argument('-i', dest='ips', default=None, help='Download 3 pages of IOCs type IPv4 and URL', action='store_true')
+    argparser.add_argument('-p', '--partial', dest='part', default=None, help='Download 3 pages of IOCs type IPv4 \
+        and URL for testing purposes', action='store_true')
     args = argparser.parse_args()
 
-    if (args.ips):
-        download_partial()
-    elif (args.full):
+    if (args.full):
         download_full()
+    elif (args.part):
+        download_partial()
 
 # If main then main
 if __name__ == '__main__':

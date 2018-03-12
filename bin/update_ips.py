@@ -16,7 +16,7 @@ import os
 import socket
 import sys
 
-# Constants
+# Config file
 config = ConfigParser.RawConfigParser()
 config.read('/cf/cleandns/etc/setup.cfg')
 
@@ -70,7 +70,7 @@ def update_shallblacklist():
 # Write to IP.txt corresponding file
 def write_to_file(DOMAIN_FILE, MALWARE_FILE):
     f_regs = set()
-    while open(MALWARE_FILE) as f:
+    with open(MALWARE_FILE) as f:
         for line in f:
             try:
                 socket.inet_aton(line)
