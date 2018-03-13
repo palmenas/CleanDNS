@@ -5,7 +5,16 @@
 # update sinkhole - 0.0.3 (01/19/2018)
 
 # Import libraries
-import os, sys, ConfigParser, shutil, glob, re, subprocess, time
+import os
+import sys
+import ConfigParser
+import shutil
+import glob
+import re
+import subprocess
+import time
+
+# Think not needed
 import clean_environ
 
 # Read configuration file

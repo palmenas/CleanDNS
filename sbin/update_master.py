@@ -35,8 +35,8 @@ SURICATA_PRE_RULE = config.get('suricata', 'prerule')
 
 # Count the lines on a file
 def file_len(f_name):
-    with open(f_name) as f:
-        for i, l in enumerate(f):
+    with open(f_name) as fh:
+        for i, l in enumerate(fh):
             pass
     return(i + 1)
 
@@ -50,18 +50,13 @@ def update_ips_mod():
     print "Updating IPs BlackLists"
     enabled_sources = config.get('sources','ips').split(' ')
     for i in enabled_sources:
-        print CLEANDNS_DIR + '/bin/update_ips.py --'+i
-        # subprocess.call(CLEANDNS_DIR + '/etc/sources/available/ips' + i + '.py')
-    print enabled_sources
+        print '%s/bin/update_ips.py --%s' % (CLEANDNS_DIR, i)
+        # os.system(CLEANDNS_DIR + '/bin/update_ips.py --' +i)
     exit(0)
 
-
-    #
     #
     # EXITING HERE
     #
-    #
-
 
     # Local Blacklist
     shutil.copyfile(LOCAL_BL_IPS, SURICATA_BL_2)
@@ -69,20 +64,17 @@ def update_ips_mod():
     # Deduplicating
     s_regs = set()
     for r_file in glob.glob(CLEANDNS_DIR + '/spool/ips-*'):
-        r_file_tmp = open(r_file, 'r')
-        r_file_tmp_lines = r_file_tmp.readlines()
-        r_file_tmp.close()
-
-        # Organize the file and clean
-        for line in r_file_tmp_lines:
-            line = re.sub(' \n','',line)
-            if re.search('^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$', line):
-                s_regs.add(line)
+        with open(r_file) as fh:
+            # Organize the file and clean
+            for line in fh:
+                line = re.sub(' \n','',line)
+                if re.search('^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$', line):
+                    s_regs.add(line)
 
     # Writing sorted, seded, uniqed
-    all_regs_file = open(SURICATA_BL_2, 'a')
-    all_regs_file.writelines(sorted(s_regs))
-    all_regs_file.close()
+    fh = open(SURICATA_BL_2, 'a')
+    fh.writelines(sorted(s_regs))
+    fh.close()
 
     # Cleaning Whitelist
     print 'Cleaning whitelist'
@@ -118,7 +110,7 @@ def update_ips_mod():
         subprocess.call(CLEANDNS_DIR + '/sbin/update_suricataconfig.sh')
 
     # Counting
-    print 'CleanDNS is protecting against ' + str(file_len(SURICATA_BLOCK_RULE)) + ' malware IPs!\nEnjoy!'
+    print 'CleanDNS is protecting against %s  malware IPs!\nEnjoy!' % file_len(SURICATA_BLOCK_RULE)
 
 def update_sinkhole():
     exit(0)
@@ -137,7 +129,6 @@ def main():
     elif args.sinkhole:
         update_sinkhole()
     else:
-        # Print help mesage
         subprocess.call([sys.argv[0], '-h'])
 
 # If main :)

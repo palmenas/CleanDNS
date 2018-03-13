@@ -85,9 +85,9 @@ def write_to_file(DOMAIN_FILE, MALWARE_FILE):
 # Main function
 def main():
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('-m', '--malwaredomain', dest='md', help='Update the MalwareDomainList IP file', action='store_true')
+    argparser.add_argument('-m', '--malwaredomainlist', dest='md', help='Update the MalwareDomainList IP file', action='store_true')
     argparser.add_argument('-o', '--otx', dest='otx', help='Update the OTX IP file', action='store_true')
-    argparser.add_argument('-r', '--rantracker', dest='rt', help='Update the RansomwareTracker IP file', action='store_true')
+    argparser.add_argument('-r', '--ransonwaretracker', dest='rt', help='Update the RansomwareTracker IP file', action='store_true')
     argparser.add_argument('-s', '--shallblacklist', dest='sb', help='Update the ShallBlackList IP file', action='store_true')
     args = argparser.parse_args()
 
